@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AI Data Leakage Detection{% endblock %}
+
+{% block extra_css %}
+<style>
+    .alert-item {
+        border-left: 4px solid;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .alert-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .alert-item.critical {
+        border-left-color: #e74c3c;
+    }
+    
+    .alert-item.high {
+        border-left-color: #f39c12;
+    }
+    
+    .alert-item.medium {
+        border-left-color: #3498db;
+    }
+    
+    .alert-item.low {
+        border-left-color: #27ae60;
+    }
+    
+    .refresh-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Header -->
+    <div class="col-12 text-center mb-4">
+        <h1 class="display-5 text-white fw-bold">
+            <i class="fas fa-chart-line"></i> Real-Time Monitoring Dashboard
+        </h1>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-bell text-primary"></i>
+            <h3 id="totalAlerts">0</h3>
+            <p>Total Alerts</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-exclamation-triangle text-danger"></i>
+            <h3 id="criticalAlerts">0</h3>
+            <p>Critical Alerts</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-exclamation-circle text-warning"></i>
+            <h3 id="highAlerts">0</h3>
+            <p>High Risk Alerts</p>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="stat-card">
+            <i class="fas fa-info-circle text-info"></i>
+            <h3 id="mediumAlerts">0</h3>
+            <p>Medium Risk Alerts</p>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="col-12 mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-server"></i> System Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong>Status:</strong> 
+                            <span class="badge bg-success" id="systemStatus">
+                                <i class="fas fa-check-circle"></i> Online
+                            </span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>Models Loaded:</strong> 
+                            <span id="modelsLoaded">-</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong>Last Update:</strong> 
+                            <span id="lastUpdate">-</span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>Active Models:</strong> 
+                            <span id="activeModels">-</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Alerts -->
+    <div class="col-12 mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Recent Alerts</h5>
+                <button class="btn btn-sm btn-light" onclick="loadAlerts()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="alertsList">
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-spinner fa-spin fa-3x mb-3"></i>
+                        <p>Loading alerts...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-12 mt-4 mb-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <a href="/" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-plus-circle"></i><br>
+                            New Analysis
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-outline-success w-100" onclick="loadAlerts()">
+                            <i class="fas fa-sync"></i><br>
+                            Refresh Data
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button class="btn btn-outline-info w-100" onclick="exportAlerts()">
+                            <i class="fas fa-download"></i><br>
+                            Export Alerts
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Refresh Button -->
+<button class="btn btn-primary btn-lg refresh-btn" onclick="loadAlerts()" title="Refresh Dashboard">
+    <i class="fas fa-sync-alt"></i>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let autoRefresh = true;
+let refreshInterval;
+
+$(document).ready(function() {
+    loadStats();
+    loadAlerts();
+    
+    // Auto-refresh every 30 seconds
+    refreshInterval = setInterval(function() {
+        if (autoRefresh) {
+            loadStats();
+            loadAlerts();
+        }
+    }, 30000);
+});
+
+function loadStats() {
+    $.ajax({
+        url: '/api/stats',
+        method: 'GET',
+        success: function(data) {
+            if (data.success) {
+                $('#totalAlerts').text(data.total_predictions);
+                $('#criticalAlerts').text(data.critical_alerts);
+                $('#highAlerts').text(data.high_alerts);
+                $('#mediumAlerts').text(data.medium_alerts);
+                $('#modelsLoaded').text(data.models_loaded);
+                $('#activeModels').text(data.model_names.join(', ') || 'None');
+            }
+        },
+        error: function() {
+            console.error('Failed to load stats');
+        }
+    });
+    
+    // Update last update time
+    const now = new Date();
+    $('#lastUpdate').text(now.toLocaleTimeString());
+}
+
+function loadAlerts() {
+    $.ajax({
+        url: '/api/alerts?limit=50',
+        method: 'GET',
+        success: function(data) {
+            if (data.success) {
+                displayAlerts(data.alerts);
+            }
+        },
+        error: function() {
+            $('#alertsList').html(`
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Failed to load alerts. Please try again.
+                </div>
+            `);
+        }
+    });
+}
+
+function displayAlerts(alerts) {
+    if (alerts.length === 0) {
+        $('#alertsList').html(`
+            <div class="text-center text-muted py-5">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <p>No alerts yet. The system is monitoring for suspicious activities.</p>
+            </div>
+        `);
+        return;
+    }
+    
+    let html = '';
+    alerts.forEach(function(alert) {
+        const riskClass = alert.risk_level.toLowerCase();
+        const riskIcon = getRiskIcon(alert.risk_level);
+        const riskColor = getRiskColor(alert.risk_level);
+        
+        html += `
+            <div class="alert-item ${riskClass} card mb-2">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-1 text-center">
+                            <i class="fas ${riskIcon} fa-2x" style="color: ${riskColor}"></i>
+                        </div>
+                        <div class="col-md-7">
+                            <h6 class="mb-1">
+                                <strong>User:</strong> ${alert.user_id}
+                            </h6>
+                            <small class="text-muted">
+                                <i class="fas fa-clock"></i> ${alert.timestamp}
+                            </small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="badge bg-${getRiskBadgeClass(alert.risk_level)} me-2">
+                                ${alert.risk_level}
+                            </span>
+                            <span class="badge bg-secondary">
+                                Risk: ${(alert.risk_score * 100).toFixed(1)}%
+                            </span>
+                            <br>
+                            <small class="text-muted">
+                                Confidence: ${(alert.confidence * 100).toFixed(1)}%
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    $('#alertsList').html(html);
+}
+
+function getRiskIcon(level) {
+    const icons = {
+        'CRITICAL': 'fa-skull-crossbones',
+        'HIGH': 'fa-exclamation-triangle',
+        'MEDIUM': 'fa-exclamation-circle',
+        'LOW': 'fa-info-circle'
+    };
+    return icons[level] || 'fa-question-circle';
+}
+
+function getRiskColor(level) {
+    const colors = {
+        'CRITICAL': '#e74c3c',
+        'HIGH': '#f39c12',
+        'MEDIUM': '#3498db',
+        'LOW': '#27ae60'
+    };
+    return colors[level] || '#95a5a6';
+}
+
+function getRiskBadgeClass(level) {
+    const classes = {
+        'CRITICAL': 'danger',
+        'HIGH': 'warning',
+        'MEDIUM': 'info',
+        'LOW': 'success'
+    };
+    return classes[level] || 'secondary';
+}
+
+function exportAlerts() {
+    $.ajax({
+        url: '/api/alerts?limit=1000',
+        method: 'GET',
+        success: function(data) {
+            if (data.success && data.alerts.length > 0) {
+                // Convert to CSV
+                const csv = convertToCSV(data.alerts);
+                
+                // Download
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'alerts_' + new Date().toISOString().slice(0,10) + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                alert('Alerts exported successfully!');
+            } else {
+                alert('No alerts to export.');
+            }
+        },
+        error: function() {
+            alert('Failed to export alerts.');
+        }
+    });
+}
+
+function convertToCSV(alerts) {
+    const headers = ['Timestamp', 'User ID', 'Risk Level', 'Risk Score', 'Confidence'];
+    const rows = alerts.map(a => [
+        a.timestamp,
+        a.user_id,
+        a.risk_level,
+        a.risk_score,
+        a.confidence
+    ]);
+    
+    let csv = headers.join(',') + '\n';
+    rows.forEach(row => {
+        csv += row.join(',') + '\n';
+    });
+    
+    return csv;
+}
+</script>
+{% endblock %}

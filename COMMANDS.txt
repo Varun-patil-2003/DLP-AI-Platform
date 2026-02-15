@@ -1,0 +1,293 @@
+================================================================================
+AI-DRIVEN DATA LEAKAGE DETECTION AND PREVENTION
+COMPLETE COMMAND REFERENCE
+================================================================================
+
+PROJECT LOCATION:
+C:\Users\varun\OneDrive\Desktop\Data Leakage Detection and Prevention
+
+================================================================================
+STEP 1: INITIAL SETUP (One-time only)
+================================================================================
+
+1.1 Navigate to Project Directory:
+-----------------------------------
+cd "C:\Users\varun\OneDrive\Desktop\Data Leakage Detection and Prevention"
+
+
+1.2 Create Virtual Environment:
+--------------------------------
+python -m venv venv
+
+
+1.3 Activate Virtual Environment:
+----------------------------------
+.\venv\Scripts\activate
+
+
+1.4 Install Dependencies:
+-------------------------
+pip install -r requirements.txt
+
+
+1.5 Install Additional Dependency (if needed):
+-----------------------------------------------
+pip install imbalanced-learn
+
+
+================================================================================
+STEP 2: VERIFY DATASET (Already Done)
+================================================================================
+
+2.1 Check if Dataset Exists:
+-----------------------------
+dir data\Data_Leakage_Detection.csv
+
+
+2.2 View Dataset Info (Optional):
+----------------------------------
+python -c "import pandas as pd; df = pd.read_csv('data/Data_Leakage_Detection.csv'); print('Shape:', df.shape); print('\nColumns:', df.columns.tolist()); print('\nFirst 3 rows:'); print(df.head(3))"
+
+
+================================================================================
+STEP 3: TRAIN MODELS (Main Training)
+================================================================================
+
+3.1 Run Complete Training Pipeline:
+------------------------------------
+python src/custom_train_pipeline.py
+
+Expected Time: 3-5 minutes
+Output Files:
+  - models/random_forest_model.pkl
+  - models/svm_model.pkl
+  - models/scaler.pkl
+  - models/feature_importance.csv
+  - training_report.txt
+
+
+3.2 Alternative: Test Preprocessing Only:
+------------------------------------------
+python src/custom_preprocessing.py
+
+
+================================================================================
+STEP 4: LAUNCH WEB APPLICATION
+================================================================================
+
+4.1 Start Flask Server:
+-----------------------
+python app/app.py
+
+Access URL: http://localhost:5000
+Dashboard: http://localhost:5000/dashboard
+
+Press CTRL+C to stop the server
+
+
+================================================================================
+STEP 5: TEST THE SYSTEM
+================================================================================
+
+5.1 Open Browser and Navigate to:
+----------------------------------
+http://localhost:5000
+
+
+5.2 Test API Health (Optional):
+--------------------------------
+curl http://localhost:5000/api/health
+
+
+5.3 Get System Stats (Optional):
+---------------------------------
+curl http://localhost:5000/api/stats
+
+
+================================================================================
+COMMON COMMANDS
+================================================================================
+
+Check Python Version:
+---------------------
+python --version
+
+
+List Installed Packages:
+------------------------
+pip list
+
+
+Update pip (if needed):
+-----------------------
+python -m pip install --upgrade pip
+
+
+Check if Models Exist:
+----------------------
+dir models\*.pkl
+dir models\*.h5
+
+
+View Training Report:
+---------------------
+type training_report.txt
+
+
+================================================================================
+TROUBLESHOOTING COMMANDS
+================================================================================
+
+If Port 5000 is Busy:
+---------------------
+Edit config.py and change FLASK_PORT = 5001
+Then run: python app/app.py
+
+
+If Module Not Found Error:
+---------------------------
+.\venv\Scripts\activate
+pip install -r requirements.txt
+pip install imbalanced-learn
+
+
+Clear Python Cache:
+-------------------
+Remove-Item -Recurse -Force __pycache__
+Remove-Item -Recurse -Force src\__pycache__
+Remove-Item -Recurse -Force app\__pycache__
+
+
+Reinstall Dependencies:
+-----------------------
+pip uninstall -r requirements.txt -y
+pip install -r requirements.txt
+
+
+================================================================================
+QUICK START (If Everything is Set Up)
+================================================================================
+
+# Activate environment
+.\venv\Scripts\activate
+
+# Train models (if not already trained)
+python src/custom_train_pipeline.py
+
+# Launch web app
+python app/app.py
+
+# Open browser to: http://localhost:5000
+
+
+================================================================================
+DEVELOPMENT COMMANDS
+================================================================================
+
+Run Jupyter Notebook (if needed):
+----------------------------------
+pip install jupyter
+jupyter notebook notebooks/exploration.ipynb
+
+
+View Feature Importance:
+------------------------
+python -c "import pandas as pd; df = pd.read_csv('models/feature_importance.csv'); print(df.head(20))"
+
+
+Check Model Files:
+------------------
+python -c "from pathlib import Path; models = Path('models'); print('\n'.join([f.name for f in models.glob('*') if f.is_file()]))"
+
+
+================================================================================
+COMPLETE AUTOMATED RUN (All Steps)
+================================================================================
+
+# Option 1: Run step by step
+.\venv\Scripts\activate
+python src/custom_train_pipeline.py
+python app/app.py
+
+
+# Option 2: Use automated script (if you want to create one)
+.\venv\Scripts\activate
+python run_custom_pipeline.py
+
+
+================================================================================
+SUBMISSION PREPARATION COMMANDS
+================================================================================
+
+Generate Training Report:
+-------------------------
+python src/custom_train_pipeline.py
+
+
+Capture Screenshots:
+--------------------
+1. Run: python app/app.py
+2. Open: http://localhost:5000
+3. Take screenshots of:
+   - Home page
+   - Prediction results (normal)
+   - Prediction results (abnormal)
+   - Dashboard
+
+
+Export Alert History (from web interface):
+-------------------------------------------
+Click "Export Alerts" button in dashboard
+
+
+================================================================================
+USEFUL VERIFICATION COMMANDS
+================================================================================
+
+Check All Required Files Exist:
+--------------------------------
+dir data\Data_Leakage_Detection.csv
+dir src\custom_preprocessing.py
+dir src\custom_train_pipeline.py
+dir src\ml_models.py
+dir app\app.py
+dir config.py
+dir requirements.txt
+
+
+Verify Models are Trained:
+---------------------------
+dir models\random_forest_model.pkl
+dir models\svm_model.pkl
+dir models\scaler.pkl
+
+
+Test Import of Modules:
+------------------------
+python -c "from src.custom_preprocessing import CustomDataPreprocessor; print('Preprocessing module OK')"
+python -c "from src.ml_models import MLModelTrainer; print('ML models module OK')"
+
+
+================================================================================
+NOTES
+================================================================================
+
+1. Always activate virtual environment before running commands:
+   .\venv\Scripts\activate
+
+2. Your dataset is located at:
+   data\Data_Leakage_Detection.csv
+
+3. Training takes 3-5 minutes with 49,500 samples
+
+4. Web app runs on port 5000 by default
+
+5. All output files are saved in:
+   - models/ (trained models)
+   - training_report.txt (performance metrics)
+
+6. To stop the web server: Press CTRL+C
+
+================================================================================
+END OF COMMAND REFERENCE
+================================================================================
