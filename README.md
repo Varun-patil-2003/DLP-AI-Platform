@@ -1,6 +1,6 @@
 # AI-Driven Data Leakage Detection and Prevention System
 
-## 🎓 Master's Program Project
+## Master's Program Project
 
 **Problem Statement:** Traditional Data Loss Prevention (DLP) systems rely on static, rule-based signatures that fail to identify sophisticated, context-driven, or zero-day leakage attempts. This research develops an AI-based framework using machine learning to monitor and analyze user behavior, network activity, and data flow in real time.
 
@@ -8,7 +8,7 @@
 
 ---
 
-## 🎯 Research Objectives
+## Research Objectives
 
 1. Study existing enterprise DLP frameworks and identify prevalent data leakage vectors
 2. Collect and preprocess datasets related to user activity and network traffic
@@ -18,7 +18,7 @@
 
 ---
 
-## 📊 Dataset
+## Dataset
 
 ### Primary Dataset: `data_leakage_detection.csv`
 
@@ -45,7 +45,7 @@ Custom-designed dataset containing **13 key features grouped into 5 major catego
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 - **Multi-Model Architecture**: Random Forest, SVM, LSTM, and Autoencoder
 - **Google Gemini AI Integration**: Intelligent alert generation with context-aware recommendations
@@ -59,7 +59,7 @@ Custom-designed dataset containing **13 key features grouped into 5 major catego
 
 ---
 
-## 📊 System Architecture
+## System Architecture
 
 ```
 ├── data/                      # Dataset storage
@@ -97,7 +97,7 @@ Custom-designed dataset containing **13 key features grouped into 5 major catego
 - pip package manager
 - npm package manager
 
-## ⚙️ Quick Start
+## Quick Start
 
 ### **Prerequisites Check:**
 ```cmd
@@ -152,7 +152,7 @@ check_nodejs.bat    # Check if Node.js installed
 - Backend API: `http://localhost:5000`
 - Network Access: `http://YOUR_IP:3000` (same WiFi)
 
-## 🎮 Usage
+## Usage
 
 ### **For Development/Testing:**
 
@@ -183,7 +183,7 @@ check_nodejs.bat    # Check if Node.js installed
    python src/train_pipeline.py
    ```
 
-## 📈 Model Performance
+## Model Performance
 
 The system employs multiple models with ensemble approach:
 
@@ -212,38 +212,38 @@ The system employs multiple models with ensemble approach:
 - Weekend indicators
 - Business hours analysis
 
-## 📊 Alert Levels
+## Alert Levels
 
 - **Low Risk**: Anomaly score < 0.7
 - **Medium Risk**: 0.7 ≤ score < 0.8
 - **High Risk**: 0.8 ≤ score < 0.9
 - **Critical**: score ≥ 0.9
 
-## 🤝 Contributing
+## Contributing
 
 This is an academic project. Feedback and suggestions are welcome.
 
-## 📝 License
+## License
 
 This project is developed for academic purposes as part of Masters program submission.
 
-## 👨‍💻 Author
+## Author
 
-Varun
+Varun Bhagavan Patil
 Master's Program Project
 
-## 📧 Contact
+## Contact
 
 For queries regarding this project, please contact through the college portal.
 
-## 📚 Documentation
+## Documentation
 
 - **README.md** - This file (project overview and quick start)
 - **AI_INTEGRATION_GUIDE.md** - Complete AI integration guide with Gemini
 - **NETWORK_ACCESS_GUIDE.md** - Network access setup and troubleshooting
 - **Project specification files** - Research documentation
 
-## 🤖 AI Integration
+## AI Integration
 
 This project uses Google Gemini AI to enhance detection capabilities:
 
@@ -252,10 +252,10 @@ This project uses Google Gemini AI to enhance detection capabilities:
 - **Pattern Analysis**: AI identifies suspicious behavior patterns
 - **Executive Summaries**: Natural language security reports
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Dataset inspired by enterprise DLP systems
 - Research based on modern AI/ML techniques in cybersecurity
 - Flask framework for web interface development
-- Google Gemini AI for intelligent analysis
+- GROK AI for intelligent analysis
 - React.js for modern UI development
