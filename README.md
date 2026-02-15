@@ -83,7 +83,7 @@ Custom-designed dataset containing **13 key features grouped into 5 major catego
 ## 🛠️ Technology Stack
 
 - **Backend**: Python, Flask, Flask-CORS
-- **AI Integration**: Google Gemini AI (gemini-1.5-flash)
+- **AI Integration**: Google Gemini AI (gemini-1.5-flash) ❌ GROK AI 📌 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
 - **Machine Learning**: Scikit-learn, Random Forest, SVM
 - **Deep Learning**: TensorFlow, Keras, LSTM, Autoencoder
 - **Frontend**: React.js, Tailwind CSS, Axios, React Router
